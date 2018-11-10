@@ -3,6 +3,8 @@ import subprocess
 from sys import argv
 import os
 
+from tools import is_file, get_length
+
 
 def command(command):
     process = subprocess.Popen(
@@ -10,10 +12,6 @@ def command(command):
     proc_stdout = process.communicate()[0].strip().decode("utf-8")
     print(proc_stdout)
     return proc_stdout
-
-
-def is_file(path):
-    return os.path.isfile(path)
 
 
 def file(path):
@@ -131,6 +129,9 @@ def watermark(args):
     command("ffmpeg -i %s -i %s -filter_complex \"overlay=W-w-5:H-h-5\" -codec:a copy %s" %
             (input_video_file, input_png_file, output_file))
 
+def subtitle(args):
+    # https://stackoverflow.com/questions/8672809/use-ffmpeg-to-add-text-subtitles
+    pass
 
 def full_time_to_seconds(string):
 
@@ -159,15 +160,7 @@ def second_to_full_time(seconds):
     return output
 
 
-def get_length(filename):
-    import re
-    result = subprocess.Popen(["ffprobe", filename],
-                              stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    output = result.stdout.readlines()
-    result = [x for x in output if b"Duration" in x]
-    result = result[0].decode("utf-8")
-    result = re.search('Duration: (.*), start', result).group(1)
-    return result
+
 
 
 import cmd
